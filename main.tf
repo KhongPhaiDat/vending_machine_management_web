@@ -2,12 +2,14 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
-# An example resource that does nothing.
-resource "null_resource" "example" {
-  triggers = {
-    value = "A example resource that does nothing!"
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-storage-datluyendevops"
+    key    = "test"
+    region = "ap-northeast-1"
   }
 }
+
 
 # Init 1 DynamoDB table
 resource "aws_dynamodb_table" "menu_database" {
