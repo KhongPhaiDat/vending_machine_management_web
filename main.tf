@@ -23,7 +23,7 @@ resource "null_resource" "example" {
 
 # Init 1 DynamoDB table
 resource "aws_dynamodb_table" "menu_database" {
-  name           = "Menu_database"
+  name           = "Test_database"
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
