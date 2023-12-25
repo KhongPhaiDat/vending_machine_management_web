@@ -14,7 +14,6 @@ terraform {
 
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "terraform-state-storage-datluyendevops"
-  
   lifecycle {
     prevent_destroy = true
   }
@@ -25,7 +24,6 @@ resource "aws_s3_bucket_versioning" "terraform_state" {
   versioning_configuration {
     status = "Enabled"
   }
-
   lifecycle {
     prevent_destroy = true
   }
@@ -39,7 +37,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" 
       sse_algorithm = "AES256"
     }
   }
-
   lifecycle {
     prevent_destroy = true
   }
@@ -54,7 +51,6 @@ resource "aws_dynamodb_table" "terraform_lock_state" {
     name = "LockID"
     type = "S"
   }
-
   lifecycle {
     prevent_destroy = true
   }
