@@ -1,7 +1,7 @@
 #!/bin/bash
 
 APP_FOLDER="vending_machine_management_web"
-SERVICE_SCRIPT="streamlit_app.service"
+SERVICE_SCRIPT="scripts/streamlit_app.service"
 
 if [ -d "$APP_FOLDER" ]; then
     # If the folder exists, run git pull and restart service
