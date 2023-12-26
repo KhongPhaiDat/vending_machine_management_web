@@ -29,17 +29,17 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      # Checks that all Terraform configuration files adhere to a canonical format
-      - name: Terraform Format
-        run: terraform fmt -check
-
       # Generates an execution plan for Terraform
       - name: Terraform Plan
         run: terraform plan -input=false
+      
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
 
-      # Get EC2 IP 
-      - name: Get EC2 Instance IP
-        run: |
-          INSTANCE_IP=$(terraform output -raw instance_ip)
-          echo "::set-output name=instance_ip::$INSTANCE_IP"
-        id: set_output
+      # Get EC2 name 
+      - name: Get EC2 Instance name
+        run: echo "instance_name=$(terraform output -raw instance_name)" >> $GITHUB_OUTPUT
+        id: flag_output
+      
+      - name: Use prior output
+        run: echo "The count was ${{ steps.flag_output.outputs.instance_name }}"

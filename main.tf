@@ -1,6 +1,7 @@
 provider "aws" {
   region = "ap-northeast-1"
 }
+
 # Init storage for tfstate file for multilple devs working
 terraform {
   backend "s3" {
@@ -219,15 +220,46 @@ resource "aws_dynamodb_table_item" "example" {
 ITEM
 }
 # Init 1 EC2 instance for deploy web app
-resource "aws_instance" "vending_machine_management" {
+resource "aws_instance" "vending_machine_management1" {
   ami           = "ami-0dfa284c9d7b2adad"
   instance_type = "t2.micro"
 
   iam_instance_profile = aws_iam_instance_profile.ec2_dynamodb.name
   security_groups      = [aws_security_group.allow_streamlit.name]
   tags = {
-    Name = "tf_vending_machine_management"
+    Name = "tf_vending_machine_management1"
   }
+
+  user_data = <<-EOF
+              #!/bin/bash
+
+              # Update the package manager and install necessary packages
+              sudo yum update -y
+              sudo yum install -y git python3-pip
+
+              # Change into ec2-user directory
+              cd /home/ec2-user
+              # Clone the Git repository
+              sudo -u ec2-user git clone https://github.com/KhongPhaiDat/vending_machine_management_web.git
+
+              # Change into the repository directory
+              cd vending_machine_management_web
+
+              # Install Python dependencies using pip
+              sudo -u ec2-user pip3 install -r requirements.txt
+
+              # Copy the systemd service file to the appropriate location
+              sudo cp scripts/streamlit_app.service /etc/systemd/system/
+
+              # Reload systemd to pick up the new service file
+              sudo systemctl daemon-reload
+
+              # Start the service
+              sudo systemctl start streamlit_app
+
+              # Enable the service to start on boot
+              sudo systemctl enable streamlit_app
+              EOF
 
   lifecycle {
     create_before_destroy = true
@@ -311,20 +343,18 @@ resource "aws_lb" "alb_vmm" {
   security_groups    = [aws_security_group.sg_alb.id]
   subnets            = data.aws_subnets.default_vpc_subnet.ids
 }
-data "aws_subnet" "vmm_subnet" {
-  id = aws_instance.vending_machine_management.subnet_id
-}
+
 data "aws_subnets" "default_vpc_subnet" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_subnet.vmm_subnet.vpc_id]
+    values = ["vpc-021a9ff8a3e82e66a"]
   }
 }
 resource "aws_lb_target_group" "alb_vmm" {
   name     = "alb-vmm-tg"
   port     = 8501
   protocol = "HTTP"
-  vpc_id   = data.aws_subnet.vmm_subnet.vpc_id
+  vpc_id   = "vpc-021a9ff8a3e82e66a"
 
   lifecycle {
     create_before_destroy = true
@@ -332,8 +362,12 @@ resource "aws_lb_target_group" "alb_vmm" {
 }
 resource "aws_lb_target_group_attachment" "alb_vmm" {
   target_group_arn = aws_lb_target_group.alb_vmm.arn
-  target_id        = aws_instance.vending_machine_management.id
+  target_id        = aws_instance.vending_machine_management1.id
   port             = 8501
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 # resource "aws_lb_listener" "alb_vmm" {
 #   load_balancer_arn = aws_lb.alb_vmm.arn
@@ -433,6 +467,6 @@ resource "aws_acm_certificate_validation" "cert_validation" {
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
-output "instance_ip" {
-  value = aws_instance.vending_machine_management.public_ip
+output "instance_name" {
+  value = aws_instance.vending_machine_management1.tags["Name"]
 }
