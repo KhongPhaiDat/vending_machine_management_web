@@ -227,7 +227,7 @@ resource "aws_instance" "vending_machine_management" {
   security_groups      = [aws_security_group.allow_streamlit.name]
   tags = {
     Name    = "tf_vending_machine_management"
-    Version = "1.0.0"
+    AppVersion = "1.0.0"
   }
 
   lifecycle {
