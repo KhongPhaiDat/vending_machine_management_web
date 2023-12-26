@@ -226,7 +226,7 @@ resource "aws_instance" "vending_machine_management" {
   iam_instance_profile = aws_iam_instance_profile.ec2_dynamodb.name
   security_groups      = [aws_security_group.allow_streamlit.name]
   tags = {
-    Name    = "tf_vending_machine_management"
+    Name       = "tf_vending_machine_management"
     AppVersion = "1.0.0"
   }
 
