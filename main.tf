@@ -432,3 +432,7 @@ resource "aws_acm_certificate_validation" "cert_validation" {
   certificate_arn         = aws_acm_certificate.cert.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
+
+output "instance_ip" {
+  value = aws_instance.vending_machine_management.public_ip
+}
