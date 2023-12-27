@@ -29,8 +29,6 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-     
-
       # Get EC2 name 
       - name: Get EC2 Instance name
         run: |
@@ -39,6 +37,28 @@ jobs:
           echo "instance_name=$INSTANCE_NAME" >> $GITHUB_OUTPUT
         id: flag_output
       
-      - name: Use prior output
+      - name: Update version from tf_vending_machine_management1 to tf_vending_machine_management2
+        if: steps.flag_output.outputs.instance_name == 'tf_vending_machine_management1'
+        run: |
+          echo "Current ec2 instance: ${{ steps.flag_output.outputs.instance_name }}"
+          echo "Update version from tf_vending_machine_management1 to tf_vending_machine_management2"
+          cd terraform/sys1tosys2
+          terraform init
+          terraform apply -auto-approve
+          cd ../terraform/system2
+          terraform init
+          terraform apply -auto-approve
+          echo "Updated successfully version from tf_vending_machine_management1 to tf_vending_machine_management2"
+      
+      - name: Update version from tf_vending_machine_management2 to tf_vending_machine_management1
         if: steps.flag_output.outputs.instance_name == 'tf_vending_machine_management2'
-        run: echo "${{ steps.flag_output.outputs.instance_name }}"
+        run: |
+          echo "Current ec2 instance: ${{ steps.flag_output.outputs.instance_name }}"
+          echo "Update version from tf_vending_machine_management2 to tf_vending_machine_management1"
+          cd terraform/sys2tosys1
+          terraform init
+          terraform apply -auto-approve
+          cd ../terraform/system1
+          terraform init
+          terraform apply -auto-approve
+          echo "Updated successfully version from tf_vending_machine_management2 to tf_vending_machine_management1"
