@@ -40,5 +40,5 @@ jobs:
         id: flag_output
       
       - name: Use prior output
-        if: steps.flag_output.outputs.instance_name == 'tf_vending_machine_management1'
+        if: steps.flag_output.outputs.instance_name == 'tf_vending_machine_management2'
         run: echo "${{ steps.flag_output.outputs.instance_name }}"
