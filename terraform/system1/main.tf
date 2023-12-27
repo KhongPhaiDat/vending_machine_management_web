@@ -230,36 +230,36 @@ resource "aws_instance" "vending_machine_management1" {
     Name = "tf_vending_machine_management1"
   }
 
-  user_data = <<-EOF
-              #!/bin/bash
+  user_data = <<EOF
+#!/bin/bash
 
-              # Update the package manager and install necessary packages
-              sudo yum update -y
-              sudo yum install -y git python3-pip
+# Update the package manager and install necessary packages
+sudo yum update -y
+sudo yum install -y git python3-pip
 
-              # Change into ec2-user directory
-              cd /home/ec2-user
-              # Clone the Git repository
-              sudo -u ec2-user git clone https://github.com/KhongPhaiDat/vending_machine_management_web.git
+# Change into ec2-user directory
+cd /home/ec2-user
+# Clone the Git repository
+sudo -u ec2-user git clone https://github.com/KhongPhaiDat/vending_machine_management_web.git
 
-              # Change into the repository directory
-              cd vending_machine_management_web
+# Change into the repository directory
+cd vending_machine_management_web
 
-              # Install Python dependencies using pip
-              sudo -u ec2-user pip3 install -r requirements.txt
+# Install Python dependencies using pip
+sudo -u ec2-user pip3 install -r requirements.txt
 
-              # Copy the systemd service file to the appropriate location
-              sudo cp scripts/streamlit_app.service /etc/systemd/system/
+# Copy the systemd service file to the appropriate location
+sudo cp scripts/streamlit_app.service /etc/systemd/system/
 
-              # Reload systemd to pick up the new service file
-              sudo systemctl daemon-reload
+# Reload systemd to pick up the new service file
+sudo systemctl daemon-reload
 
-              # Start the service
-              sudo systemctl start streamlit_app
+# Start the service
+sudo systemctl start streamlit_app
 
-              # Enable the service to start on boot
-              sudo systemctl enable streamlit_app
-              EOF
+# Enable the service to start on boot
+sudo systemctl enable streamlit_app
+EOF
 
   lifecycle {
     create_before_destroy = true
