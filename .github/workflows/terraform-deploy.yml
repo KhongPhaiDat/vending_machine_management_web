@@ -42,7 +42,10 @@ jobs:
         run: |
           echo "Current ec2 instance: ${{ steps.flag_output.outputs.instance_name }}"
           echo "Update version from tf_vending_machine_management1 to tf_vending_machine_management2"
-          cd terraform/sys1tosys2
+          cd terraform/sys1tosys2_create_ec2
+          terraform init
+          terraform apply -auto-approve
+          cd ../sys1tosys2_remove_attach
           terraform init
           terraform apply -auto-approve
           cd ../system2
@@ -55,7 +58,10 @@ jobs:
         run: |
           echo "Current ec2 instance: ${{ steps.flag_output.outputs.instance_name }}"
           echo "Update version from tf_vending_machine_management2 to tf_vending_machine_management1"
-          cd terraform/sys2tosys1
+          cd terraform/sys2tosys1_create_ec2
+          terraform init
+          terraform apply -auto-approve
+          cd terraform/sys2tosys1_remove_attach
           terraform init
           terraform apply -auto-approve
           cd ../system1
