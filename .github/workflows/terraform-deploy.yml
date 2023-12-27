@@ -45,7 +45,7 @@ jobs:
           cd terraform/sys1tosys2
           terraform init
           terraform apply -auto-approve
-          cd ../terraform/system2
+          cd ../system2
           terraform init
           terraform apply -auto-approve
           echo "Updated successfully version from tf_vending_machine_management1 to tf_vending_machine_management2"
@@ -58,7 +58,7 @@ jobs:
           cd terraform/sys2tosys1
           terraform init
           terraform apply -auto-approve
-          cd ../terraform/system1
+          cd ../system1
           terraform init
           terraform apply -auto-approve
           echo "Updated successfully version from tf_vending_machine_management2 to tf_vending_machine_management1"
