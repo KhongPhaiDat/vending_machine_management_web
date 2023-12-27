@@ -61,7 +61,7 @@ jobs:
           cd terraform/sys2tosys1_create_ec2
           terraform init
           terraform apply -auto-approve
-          cd terraform/sys2tosys1_remove_attach
+          cd ../sys2tosys1_remove_attach
           terraform init
           terraform apply -auto-approve
           cd ../system1
