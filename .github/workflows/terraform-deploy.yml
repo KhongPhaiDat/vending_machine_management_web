@@ -38,7 +38,10 @@ jobs:
 
       # Get EC2 name 
       - name: Get EC2 Instance name
-        run: echo "instance_name=$(terraform output instance_name)" | sed 's/"//g' >> $GITHUB_OUTPUT
+        run: |
+          INSTANCE_NAME="$(terraform output instance_name) | sed 's/"//g'"
+          echo "Instance name: $INSTANCE_NAME" 
+          echo "instance_name=$INSTANCE_NAME" >> $GITHUB_OUTPUT
         id: flag_output
       
       - name: Use prior output
