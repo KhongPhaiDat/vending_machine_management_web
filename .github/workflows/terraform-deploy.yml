@@ -38,8 +38,8 @@ jobs:
 
       # Get EC2 name 
       - name: Get EC2 Instance name
-        run: echo "instance_name=$(terraform output instance_name)" >> $GITHUB_OUTPUT
+        run: echo "instance_name=$(terraform output instance_name)" | sed 's/"//g' >> $GITHUB_OUTPUT
         id: flag_output
       
       - name: Use prior output
-        run: echo "The count was ${{ steps.flag_output.outputs.instance_name }}"
+        run: echo "${{ steps.flag_output.outputs.instance_name }}"
